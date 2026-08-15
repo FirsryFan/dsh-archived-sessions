@@ -1,0 +1,28 @@
+{
+  "name": "dsh-archived-sessions",
+  "version": "0.1.0",
+  "description": "归档会话管理：在设置中按工作区列出已归档会话，支持恢复与彻底删除；并在左栏会话行上提供直接删除入口。",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
+    }
+  },
+  "keywords": ["dsh-plugin", "archive", "sessions", "session-manager"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FirsryFan/dsh-archived-sessions.git"
+  },
+  "license": "MIT"
+}

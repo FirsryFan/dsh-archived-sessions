@@ -1,0 +1,6 @@
+# dsh-archived-sessions bundle patch — insert this plugin's row into the host
+# composition tree. `name` must equal the package name (client-modules
+# resolves it that way).
+- insert:
+    - id: archived-sessions
+      name: dsh-archived-sessions
