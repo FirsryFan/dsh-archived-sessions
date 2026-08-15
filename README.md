@@ -1,10 +1,16 @@
 # dsh-archived-sessions
 
-DeepSeek Harness Web UI「归档会话管理」插件（bundle：host 路由 + 客户端设置页）。
+> DeepSeek Harness Web UI「归档会话管理」插件（bundle：host 路由 + 客户端设置页）。
 
-> English: archived-session management for the DeepSeek Harness Web UI — lists
-> archived sessions per workspace under Settings, with restore / permanent
-> delete, plus a per-row delete button in the sidebar.
+在设置中按工作区列出所有已归档会话，支持恢复与彻底删除；并在左栏会话行上提供
+直接删除入口。
+
+English: Archived-session management for the DeepSeek Harness Web UI — lists
+archived sessions per workspace under Settings, with restore / permanent
+delete, plus a per-row delete button in the sidebar.
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh-plugin-bundle-blue.svg)](https://github.com/deepseek-ai/DeepSeek-Harness)
 
 ## 功能
 
@@ -18,7 +24,8 @@ DeepSeek Harness Web UI「归档会话管理」插件（bundle：host 路由 + �
 - **左栏直接删除**：每个会话行（hover）出现垃圾桶按钮，确认后彻底删除该会话；
   若删除的是当前打开的会话，会自动跳回"新建会话"。
 - 在 **设置 → 插件 → 第三方插件** 中以 `archived-sessions` 列出（由
-  dsh-thirdparty-settings 管理），其「设置」按钮直接导航到 设置 → 归档会话。
+  [`dsh-thirdparty-settings`](https://github.com/FirsryFan/dsh-thirdparty-settings) 管理），
+  其「设置」按钮直接导航到 设置 → 归档会话。
 
 ## 实现说明
 
@@ -32,7 +39,8 @@ DeepSeek Harness Web UI「归档会话管理」插件（bundle：host 路由 + �
     或已加载（在内存 store 中）的会话返回 409，日志已不存在的重试直接成功。
 - Client 半部（`client.js`）：
   - `settings.section` 注册项 `archived-sessions`（nav「归档会话」）；
-  - 通过 `window.__DSH_THIRDPARTY__.register()` 挂入第三方插件管理器；
+  - 通过 `window.__DSH_THIRDPARTY__.register()` 挂入第三方插件管理器
+    （注册 id 与 bundle id `dsh-archived-sessions` 一致，确保列表只出现一行）；
   - 用 MutationObserver 给左栏会话行注入删除按钮（按行标题解析会话 id）。
 
 ## 安装
@@ -52,6 +60,25 @@ dsh plugin --profile web add github:FirsryFan/dsh-archived-sessions
 （`"dsh-archived-sessions": "link:D:\\dsh\\plugins\\dsh-archived-sessions"`）与
 `dsh.profile.bundles`（排在 `dsh-thirdparty-settings` 之后），然后 `pnpm install`
 并**重启 DSH**。
+
+## 使用
+
+安装并重启 DSH 后：
+
+- **管理归档会话**：设置 → 归档会话，按工作区查看已归档会话，点击 恢复 / 删除；
+- **左栏快速删除**：侧边栏会话行 hover 显示垃圾桶按钮，点击并确认后彻底删除；
+  删除当前打开的会话会自动跳回"新建会话"。
+
+## 依赖
+
+建议同时安装 [`dsh-thirdparty-settings`](https://github.com/FirsryFan/dsh-thirdparty-settings)，
+以获得统一的「第三方插件」设置入口宿主；未安装时本插件的设置页与左栏删除功能
+仍然可用。
+
+## 变更记录
+
+- **0.1.0**：首个公开版本。归档会话管理 + 左栏直接删除；注册 id 与 bundle id 对齐，
+  修复第三方插件列表中出现的重复条目。
 
 ## License
 
