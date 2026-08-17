@@ -216,15 +216,15 @@ window.__ModuleLoader__.load({
       function step() {
         tries += 1
         if (tries > 30) return
-        var overlay = document.querySelector('.VOzbGW_overlay')
+        var overlay = document.querySelector('.QS067W_overlay, .VOzbGW_overlay')
         if (overlay === null) {
-          var trigger = document.querySelector('.VOzbGW_trigger')
+          var trigger = document.querySelector('.QS067W_trigger, .VOzbGW_trigger')
           if (trigger === null) { setTimeout(step, 150); return }
           trigger.click()
           setTimeout(step, 150)
           return
         }
-        var cells = document.querySelectorAll('.VOzbGW_navCell')
+        var cells = document.querySelectorAll('.QS067W_navCell, .VOzbGW_navCell')
         var label = t('nav')
         var target = null
         for (var i = 0; i < cells.length; i++) {
@@ -247,7 +247,7 @@ window.__ModuleLoader__.load({
 
     function installRowDelete(ctx, api, t) {
       var style = document.createElement('style')
-      style.textContent = '.dsh-as-del{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--dsw-alias-label-tertiary,#8b9bb5);border-radius:50%;cursor:pointer;padding:0;opacity:0;transition:opacity .12s ease,color .12s ease;flex:none}.dsh-as-del:hover{opacity:1!important;color:var(--dsw-alias-state-error-primary,#e5484d)!important}.YDXeBa_sessionRow:hover .dsh-as-del{opacity:.8}'
+      style.textContent = '.dsh-as-del{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--dsw-alias-label-tertiary,#8b9bb5);border-radius:50%;cursor:pointer;padding:0;opacity:0;transition:opacity .12s ease,color .12s ease;flex:none}.dsh-as-del:hover{opacity:1!important;color:var(--dsw-alias-state-error-primary,#e5484d)!important}.ESw8rG_sessionRow:hover .dsh-as-del,.YDXeBa_sessionRow:hover .dsh-as-del{opacity:.8}'
       document.head.appendChild(style)
 
       function titleToId(title) {
@@ -265,7 +265,7 @@ window.__ModuleLoader__.load({
 
       function addButton(row) {
         if (row.querySelector('[data-dsh-as-del]') !== null) return
-        var actions = row.querySelector('.YDXeBa_rowActions')
+        var actions = row.querySelector('.ESw8rG_rowActions, .YDXeBa_rowActions')
         if (actions === null) return
         var btn = document.createElement('button')
         btn.type = 'button'
@@ -277,7 +277,7 @@ window.__ModuleLoader__.load({
         btn.addEventListener('click', function (e) {
           e.stopPropagation()
           e.preventDefault()
-          var titleEl = row.querySelector('.YDXeBa_title')
+          var titleEl = row.querySelector('.ESw8rG_title, .YDXeBa_title')
           var title = titleEl === null ? '' : (titleEl.textContent || '').trim()
           var sessionId = titleToId(title)
           if (sessionId === undefined) {
@@ -294,7 +294,7 @@ window.__ModuleLoader__.load({
       }
 
       function scan() {
-        var rows = document.querySelectorAll('.YDXeBa_sessionRow')
+        var rows = document.querySelectorAll('.ESw8rG_sessionRow, .YDXeBa_sessionRow')
         for (var i = 0; i < rows.length; i++) addButton(rows[i])
       }
       var observer = new MutationObserver(scan)

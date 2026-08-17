@@ -86,16 +86,35 @@ export function apply(ctx) {
       error.code = 'live'
       throw error
     }
-    // A session object stays in the in-memory store once it has been opened,
-    // and the platform has no supported way to evict it (a fake
-    // session/disposed would make the persistence backend re-flush and
-    // RECREATE the log). Deleting the log underneath an attached session
-    // leaves a ghost row in the sidebar, so refuse while attached.
+
+    // Unload an attached (loaded) session before touching its log. We mirror
+    // AgentHandle.dispose()'s ordering with the primitives that are reachable
+    // from a bundle host: cancel → wait idle → unwind the agent scope → detach
+    // the agent and session registries. The registry stores are ordinary
+    // mutable maps in the compiled host, and the detach entries expose the
+    // same teardown path the agent lifecycle uses.
+    if (agent !== undefined) {
+      if (typeof agent.cancel === 'function') agent.cancel({ kind: 'disposed' })
+      if (typeof agent.whenIdle === 'function') await agent.whenIdle()
+      if (agent.scope !== undefined && typeof agent.scope.dispose === 'function') {
+        await agent.scope.dispose()
+      }
+      const agentEntry = agents.store !== undefined ? agents.store.get(sessionId) : undefined
+      if (agentEntry !== undefined && typeof agents.detachEntered === 'function') {
+        agents.detachEntered(agentEntry)
+      }
+    }
     const sessions = ctx.get('sessions')
-    if (sessions !== undefined && sessions.get(sessionId) !== undefined) {
-      const error = new Error('该会话已在本进程中被打开（加载在内存中），DSH 目前不支持删除已加载的会话。重启 DSH 后它会变为未加载状态，即可正常删除。')
-      error.code = 'attached'
-      throw error
+    const session = sessions === undefined ? undefined : sessions.get(sessionId)
+    if (session !== undefined && typeof sessions.flush === 'function') {
+      // Make buffered events durable before the log directory is removed.
+      await sessions.flush(session)
+    }
+    const sessionEntry = sessions !== undefined && sessions.store !== undefined
+      ? sessions.store.get(sessionId)
+      : undefined
+    if (sessionEntry !== undefined && typeof sessionEntry.detach === 'function') {
+      sessionEntry.detach()
     }
 
     // Accounting cleanup FIRST, log deletion LAST: a failure anywhere leaves
